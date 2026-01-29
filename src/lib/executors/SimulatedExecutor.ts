@@ -37,6 +37,22 @@ const readFile = (fs: FsNode[], path: string): string | undefined => {
 const collectFiles = (fs: FsNode[], paths: string[], recursive: boolean): string[] => {
   const files: string[] = [];
   for (const p of paths) {
+    // simple glob support: only '*' wildcard
+    if (p.includes('*')) {
+      const globToRegex = (pattern: string) =>
+        new RegExp(
+          '^' +
+            pattern
+              .replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&') // escape regex specials except '*'
+              .replace(/\*/g, '.*') +
+            '$'
+        );
+      const regex = globToRegex(p);
+      const matched = fs.filter((n) => n.type === 'file' && regex.test(n.path));
+      files.push(...matched.map((m) => m.path));
+      continue;
+    }
+
     const node = fs.find((n) => n.path === p);
     if (node?.type === 'file') {
       files.push(node.path);

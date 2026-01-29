@@ -37,5 +37,32 @@ export const trainingFs: FsNode[] = [
     type: 'file',
     path: '/notes/todo.txt',
     content: `- add retries\n- document grep lessons\n- ship demo\n`
+  },
+  { type: 'dir', path: '/texts' },
+  {
+    type: 'file',
+    path: '/texts/animals.txt',
+    content: `cat\nconcatenate\nscatter\ncatalog\nDog\ndogmatic\nhotdog\n`
+  },
+  {
+    type: 'file',
+    path: '/texts/anchors.txt',
+    content: `ERROR boot failed\nWARN low memory\nINFO boot complete\nERROR shutdown pending\n`
+  },
+  {
+    type: 'file',
+    path: '/texts/classes.txt',
+    content: `abc\n123\n9lives\nzoo\nfile01\n`
+  },
+  { type: 'dir', path: '/regex' },
+  {
+    type: 'file',
+    path: '/regex/quantifiers.txt',
+    content: `a\nab\nabb\nabbb\nabbbb\n`
+  },
+  {
+    type: 'file',
+    path: '/regex/groups.txt',
+    content: `cat\ndog\ncatalog\nconcatenate\nhotdog\n`
   }
 ];

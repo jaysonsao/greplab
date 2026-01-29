@@ -4,6 +4,7 @@
 
   export let executor: Executor;
   export let cwd = '/';
+  export let resetKey = 0; // changing this prop will clear entries
 
   const dispatch = createEventDispatcher();
 
@@ -11,12 +12,16 @@
   let entries: Entry[] = [];
   let command = '';
 
+  $: if (resetKey !== undefined) {
+    entries = [];
+  }
+
   const runCommand = async () => {
     const trimmed = command.trim();
     if (!trimmed) return;
     const result = await Promise.resolve(executor.run(trimmed, cwd));
     entries = [...entries, { command: trimmed, stdout: result.stdout, stderr: result.stderr, exitCode: result.exitCode }];
-    dispatch('executed', result);
+    dispatch('executed', { command: trimmed, result });
     command = '';
   };
 </script>
