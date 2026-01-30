@@ -14,6 +14,21 @@ export type Lesson = {
 };
 
 export const lessons: Lesson[] = [
+  {
+    id: 'l0-welcome',
+    title: 'Welcome to GrepLab',
+    prompt:
+      'Welcome to GrepLab! This progression walks you through grep (Global Regular Expression Print) basics using a simulated file system. Each lesson tells you a goal, the working directory (cwd), and which commands are allowed. Type commands in the terminal, and check hints if you get stuck. When ready, press Next to start your first search.',
+    cwd: '/',
+    allowedCommands: ['ls', 'grep', 'cat'],
+    conceptTags: ['intro'],
+    note: 'explore the files with ls if you like, then hit Next to begin.',
+    success: { type: 'stdout_contains_all', expected: [] },
+    hints: ['Use ls to peek at the training files.', 'Click Next when you are ready to start.'],
+    solution: 'ls',
+    executionMode: 'simulated',
+    visiblePaths: ['/', '/logs', '/texts', '/regex', '/data', '/notes', '/src']
+  },
   // Level 1: Foundations
   {
     id: 'l1-literal',

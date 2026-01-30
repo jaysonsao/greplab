@@ -21,12 +21,12 @@
     <div class="text-sm uppercase tracking-wide text-slate-400 flex items-center gap-2">
       <span>Lesson {index + 1} / {total}</span>
       {#if completed}
-        <span class="px-2 py-1 rounded-full bg-emerald-900/40 border border-emerald-700 text-emerald-300 text-xs">Completed</span>
+        <span class="px-2 py-1 rounded-md bg-emerald-900/40 border border-emerald-700 text-emerald-300 text-xs">Completed</span>
       {/if}
     </div>
     <div class="flex gap-2 text-xs text-slate-300">
       {#each lesson.conceptTags as tag}
-        <span class="px-2 py-1 rounded-full bg-slate-800 border border-slate-700">{tag}</span>
+        <span class="px-2 py-1 rounded-sm bg-slate-800 border border-slate-700">{tag}</span>
       {/each}
     </div>
   </div>
@@ -37,7 +37,7 @@
   </div>
 
   {#if lesson.note}
-    <div class="text-sm text-slate-200 p-3 rounded bg-slate-800/60 border border-slate-700">
+    <div class="text-sm text-slate-200 p-3 rounded-md bg-slate-800/60 border border-slate-700">
       <span class="font-semibold text-slate-100">Concept:</span> {lesson.note}
     </div>
   {/if}
@@ -45,8 +45,11 @@
   <div class="space-y-2">
     <div class="flex items-center justify-between">
       <p class="text-sm text-slate-400">Hints</p>
-      <button class="text-xs px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-200" on:click={() => (showHints = true)}>
-        Reveal hint
+      <button
+        class="text-xs px-2 py-1 rounded-sm bg-slate-800 border border-slate-700 text-slate-200"
+        on:click={() => (showHints = !showHints)}
+      >
+        {showHints ? 'Hide hints' : 'Show hints'}
       </button>
     </div>
     {#if showHints}
@@ -56,16 +59,8 @@
         {/each}
       </ul>
     {:else}
-      <p class="text-slate-500 text-xs">Hints are hidden until you click “Reveal”.</p>
+      <p class="text-slate-500 text-xs">Hints are hidden until you click “Show hints”.</p>
     {/if}
   </div>
 
-  <div class="flex gap-2 pt-2">
-    <button class="px-3 py-2 bg-slate-800 border border-slate-700 rounded" on:click={() => dispatch('prev')} disabled={index === 0}>
-      Previous
-    </button>
-    <button class="px-3 py-2 bg-accent text-ink font-semibold rounded" on:click={() => dispatch('next')} disabled={index + 1 >= total}>
-      Next
-    </button>
-  </div>
 </div>

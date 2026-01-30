@@ -12,9 +12,21 @@ const tokenize = (input: string): string[] => {
 };
 
 const normalizePath = (cwd: string, target: string): string => {
-  if (target.startsWith('/')) return target;
-  if (cwd.endsWith('/')) return cwd + target;
-  return `${cwd}/${target}`;
+  // Resolve simple relative segments (., ..) against the provided cwd.
+  const base = target.startsWith('/') ? target : `${cwd.replace(/\/$/, '')}/${target}`;
+  const parts = base.split('/');
+  const stack: string[] = [];
+
+  for (const part of parts) {
+    if (!part || part === '.') continue;
+    if (part === '..') {
+      if (stack.length) stack.pop();
+      continue;
+    }
+    stack.push(part);
+  }
+
+  return '/' + stack.join('/');
 };
 
 const listDir = (fs: FsNode[], dir: string): string[] => {
@@ -73,50 +85,132 @@ const formatMatch = (file: string, lineNo: number, line: string, showLineNumbers
 };
 
 const grep = (fs: FsNode[], args: string[], cwd: string): ExecResult => {
-  const flags = args.filter((a) => a.startsWith('-'));
-  const rest = args.filter((a) => !a.startsWith('-'));
-  if (rest.length < 2) {
+  // Basic flag parsing tailored to the tutor lessons (supports combined short flags).
+  const positional: string[] = [];
+  let recursive = false;
+  let ignoreCase = false;
+  let invert = false;
+  let showCounts = false;
+  let listFiles = false;
+  let showLineNumbers = false;
+  let extended = false;
+  let onlyMatching = false;
+  let fixed = false;
+  let pcre = false;
+  let afterContext = 0;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    // Context flags can be passed as -A 1 or -A1
+    if (arg === '-A' && i + 1 < args.length) {
+      afterContext = Number(args[++i]) || 0;
+      continue;
+    }
+    if (/^-A\d+$/.test(arg)) {
+      afterContext = Number(arg.slice(2)) || 0;
+      continue;
+    }
+
+    if (arg === '-F') {
+      fixed = true;
+      continue;
+    }
+    if (arg === '-P') {
+      pcre = true;
+      continue;
+    }
+
+    if (arg.startsWith('-') && arg.length > 1) {
+      for (let j = 1; j < arg.length; j++) {
+        switch (arg[j]) {
+          case 'R':
+          case 'r':
+            recursive = true;
+            break;
+          case 'i':
+            ignoreCase = true;
+            break;
+          case 'v':
+            invert = true;
+            break;
+          case 'c':
+            showCounts = true;
+            break;
+          case 'l':
+            listFiles = true;
+            break;
+          case 'n':
+            showLineNumbers = true;
+            break;
+          case 'E':
+            extended = true;
+            break;
+          case 'o':
+            onlyMatching = true;
+            break;
+          default:
+            break;
+        }
+      }
+      continue;
+    }
+
+    positional.push(arg);
+  }
+
+  if (positional.length < 2) {
     return { stdout: '', stderr: 'grep: missing PATTERN or FILE\n', exitCode: 2 };
   }
-  const pattern = rest[0];
-  const targets = rest.slice(1).map((p) => normalizePath(cwd, p));
-  const recursive = flags.includes('-R') || flags.includes('--recursive');
+
+  const pattern = positional[0];
+  const targets = positional.slice(1).map((p) => normalizePath(cwd, p));
   const files = collectFiles(fs, targets, recursive);
   if (!files.length) {
     return { stdout: '', stderr: 'grep: no such file or directory\n', exitCode: 2 };
   }
 
-  const ignoreCase = flags.includes('-i');
-  const invert = flags.includes('-v');
-  const showCounts = flags.includes('-c');
-  const listFiles = flags.includes('-l');
-  const showLineNumbers = flags.includes('-n');
-  const extended = flags.includes('-E');
-
-  const regex = extended
-    ? new RegExp(pattern, ignoreCase ? 'i' : '')
-    : undefined;
-
-  const matchLine = (line: string): boolean => {
-    if (regex) return regex.test(line);
-    if (ignoreCase) return line.toLowerCase().includes(pattern.toLowerCase());
-    return line.includes(pattern);
+  // Build a matcher. We keep a regex around so -o can return matched segments.
+  const buildRegex = (): RegExp => {
+    if (pcre || extended) return new RegExp(pattern, (ignoreCase ? 'i' : '') + 'g');
+    if (fixed) return new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), (ignoreCase ? 'i' : '') + 'g');
+    // Default literal search; escape so we don't treat metacharacters specially
+    return new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), (ignoreCase ? 'i' : '') + 'g');
   };
+
+  const regex = buildRegex();
 
   const outputs: string[] = [];
   for (const file of files) {
     const content = readFile(fs, file) ?? '';
     const lines = content.split(/\n/);
     let count = 0;
+
     lines.forEach((line, idx) => {
-      const matched = matchLine(line);
-      if (invert ? !matched : matched) {
-        count += 1;
-        if (!showCounts && !listFiles) {
+      regex.lastIndex = 0; // reset for global regex reuse
+      const matches = Array.from(line.matchAll(regex)).map((m) => m[0]).filter(Boolean);
+      const isMatch = matches.length > 0;
+      const passed = invert ? !isMatch : isMatch;
+
+      if (!passed) return;
+      count += 1;
+
+      if (!showCounts && !listFiles) {
+        if (onlyMatching && !invert) {
+          // Output each match separately
+          matches.forEach((m) => outputs.push(formatMatch(file, idx + 1, m, showLineNumbers, files.length > 1)));
+        } else {
           outputs.push(formatMatch(file, idx + 1, line, showLineNumbers, files.length > 1));
+        }
+
+        if (afterContext > 0) {
+          for (let k = 1; k <= afterContext && idx + k < lines.length; k++) {
+            outputs.push(formatMatch(file, idx + 1 + k, lines[idx + k], showLineNumbers, files.length > 1));
+          }
         }
       }
     });
+
     if (showCounts) outputs.push(`${count}`);
     if (listFiles && count > 0) outputs.push(file.replace(/^\//, ''));
   }

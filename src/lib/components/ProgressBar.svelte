@@ -3,7 +3,7 @@
   export let completed = 0;
   export let total = 1;
 
-  const percent = total ? Math.round((current / total) * 100) : 0;
+  $: percent = total ? Math.round((completed / total) * 100) : 0;
 </script>
 
 <div class="w-full">

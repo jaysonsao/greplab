@@ -52,7 +52,7 @@ export const trainingFs: FsNode[] = [
   {
     type: 'file',
     path: '/texts/classes.txt',
-    content: `abc\n123\n9lives\nzoo\nfile01\n`
+    content: `abc\n123\n9lives\nzoo\nfile01\n[0-9]\n`
   },
   { type: 'dir', path: '/regex' },
   {
@@ -63,6 +63,6 @@ export const trainingFs: FsNode[] = [
   {
     type: 'file',
     path: '/regex/groups.txt',
-    content: `cat\ndog\ncatalog\nconcatenate\nhotdog\n`
+    content: `cat\ndog\ncatalog\nconcatenate dog\nhotdog\n`
   }
 ];

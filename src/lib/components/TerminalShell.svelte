@@ -26,7 +26,7 @@
   };
 </script>
 
-<div class="code-card h-full flex flex-col">
+  <div class="code-card h-full flex flex-col">
   <div class="flex items-center justify-between border-b border-slate-800 px-4 py-3 text-sm text-slate-300">
     <span>Simulated Terminal</span>
     <span class="text-slate-500">cwd: {cwd}</span>
@@ -54,7 +54,7 @@
     <span class="text-accent font-mono">$</span>
     <input
       class="flex-1 bg-slate-900/70 border border-slate-800 rounded px-3 py-2 font-mono text-slate-100 focus:outline-none focus:border-accent"
-      placeholder="grep &quot;ERROR&quot; logs/app.log"
+      placeholder="enter command"
       bind:value={command}
     />
     <button type="submit" class="px-3 py-2 bg-accent text-ink font-semibold rounded">Run</button>
