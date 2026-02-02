@@ -18,11 +18,11 @@ export const lessons: Lesson[] = [
     id: 'l0-welcome',
     title: 'Welcome to GrepLab',
     prompt:
-      'Welcome to GrepLab! This progression walks you through grep (Global Regular Expression Print) basics using a simulated file system. Each lesson tells you a goal, the working directory (cwd), and which commands are allowed. Type commands in the terminal, and check hints if you get stuck. When ready, press Next to start your first search.',
+      "This progression walks you through grep (Global Regular Expression Print) basics using a simulated file system. In this environment, you'll search through real files using grep. Type commands in the terminal and check hints if you get stuck.",
     cwd: '/',
     allowedCommands: ['ls', 'grep', 'cat'],
     conceptTags: ['intro'],
-    note: 'explore the files with ls if you like, then hit Next to begin.',
+    note: 'explore the files with ls if you like, then press Get Started to begin.',
     success: { type: 'stdout_contains_all', expected: [] },
     hints: ['Use ls to peek at the training files.', 'Click Next when you are ready to start.'],
     solution: 'ls',
@@ -33,7 +33,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l1-literal',
     title: 'Literal match',
-    prompt: 'Find lines containing ERROR in app.log.',
+    prompt: 'Open logs/app.log and look at its contents. Your goal is to display only the lines that contain the word ERROR exactly as written. Think about how grep matches plain text by default.',
     cwd: '/',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['literal'],
@@ -47,7 +47,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l1-ignore-case',
     title: 'Case-insensitive',
-    prompt: 'Match dog in any case inside texts/animals.txt.',
+    prompt: 'Examine animals.txt and notice how the word “dog” appears in different forms. Find a way to search so that capitalization does not matter.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-i'],
@@ -61,11 +61,11 @@ export const lessons: Lesson[] = [
   {
     id: 'l1-multi-file',
     title: 'Multiple files',
-    prompt: 'Search for ERROR across both log files.',
+    prompt: 'Look inside the logs directory and note how many .log files exist. Search all of them at once for ERROR instead of checking each file manually.',
     cwd: '/',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['multiple files'],
-    note: 'Grep can take multiple files; shell globs like *.log expand before grep runs.',
+    note: "Grep can take multiple files; shell 'globs' like *.log expand before grep runs.",
     success: { type: 'stdout_contains_all', expected: ['logs/app.log', 'ERROR'] },
     hints: ['Use * as a wildcard to match files with the same extension (e.g., *.log).'],
     solution: 'grep "ERROR" logs/*.log',
@@ -75,7 +75,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l1-line-numbers',
     title: 'Show line numbers',
-    prompt: 'Show line numbers for WARN in logs/app.log.',
+    prompt: 'Find where WARN appears inside logs/app.log. Modify your search so the output shows which line number each match came from.',
     cwd: '/',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-n'],
@@ -89,7 +89,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l1-invert',
     title: 'Invert matches',
-    prompt: 'Show lines in logs/app.log that are NOT WARN.',
+    prompt: 'View logs/app.log and notice the different log levels. Now display every line except the ones containing WARN.',
     cwd: '/',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-v'],
@@ -105,7 +105,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l2-wildcard',
     title: 'Wildcard dot',
-    prompt: 'Find three-letter words h.t in animals.txt.',
+    prompt: 'Look through animals.txt for short words starting with h and ending with t. Write a pattern that allows any single character in between.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '.'],
@@ -119,7 +119,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l2-anchors',
     title: 'Anchors ^ and $',
-    prompt: 'Find lines that start with ERROR in anchors.txt.',
+    prompt: 'Some lines in anchors.txt contain ERROR in different positions. Find only the lines where ERROR appears at the very beginning.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '^'],
@@ -133,7 +133,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l2-classes',
     title: 'Character classes',
-    prompt: 'Match lines that contain a digit in classes.txt.',
+    prompt: 'Open classes.txt and identify which lines contain numbers. Create a pattern that matches any single digit.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '[0-9]'],
@@ -147,7 +147,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l2-negated-class',
     title: 'Negated class',
-    prompt: 'Show lines that do NOT contain digits in classes.txt.',
+    prompt: 'In classes.txt, some lines contain only letters, while others include digits. Display only the lines that are made up entirely of non-digit characters.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '[^0-9]'],
