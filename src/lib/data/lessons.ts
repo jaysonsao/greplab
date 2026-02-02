@@ -163,7 +163,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l3-star',
     title: 'Kleene star',
-    prompt: 'Match a followed by zero or more b in quantifiers.txt.',
+    prompt: 'Inspect quantifiers.txt and notice how many b characters follow a. Match lines where a is followed by zero or more bs.',
     cwd: '/regex',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '*'],
@@ -177,7 +177,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l3-plus-question',
     title: 'Plus and question',
-    prompt: 'Match a followed by one or more b.',
+    prompt: 'Using the same file, match only the lines where a is followed by at least one b. Think about how this differs from zero-or-more.',
     cwd: '/regex',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '+', '?'],
@@ -191,7 +191,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l3-exact-n',
     title: 'Exact repetition',
-    prompt: 'Match exactly three b after a.',
+    prompt: 'Find the line where a is followed by exactly three bs. Make sure your pattern matches the whole line, not just part of it.',
     cwd: '/regex',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '{n}'],
@@ -207,7 +207,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l4-alternation',
     title: 'Alternation',
-    prompt: 'Find cat or dog as separate words.',
+    prompt: 'Search groups.txt for lines that contain either the word cat or the word dog. Use a single pattern instead of running multiple searches.',
     cwd: '/regex',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '|'],
@@ -221,7 +221,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l4-group',
     title: 'Grouping',
-    prompt: 'Match hotdog or catalog using grouping.',
+    prompt: 'In groups.txt, some words share common parts. Use grouping to build a pattern that matches both hotdog and catalog without writing them separately.',
     cwd: '/regex',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '()'],
@@ -237,7 +237,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l5-boundary',
     title: 'Word boundaries',
-    prompt: 'Match the whole word cat (not catalog).',
+    prompt: 'Search for the word cat in animals.txt. Make sure your result does not include longer words like catalog. Think about how to match whole words only.',
     cwd: '/texts',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-E', '\\b'],
@@ -253,7 +253,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l6-recursive',
     title: 'Recursive search',
-    prompt: 'Find TODO anywhere under root.',
+    prompt: 'Explore the directory tree under /. Find every occurrence of TODO, even in files inside subdirectories.',
     cwd: '/',
     allowedCommands: ['grep', 'ls', 'cat'],
     conceptTags: ['-R'],
@@ -266,7 +266,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l6-count',
     title: 'Count matches',
-    prompt: 'Count ERROR lines in app.log.',
+    prompt: 'Determine how many lines in logs/app.log contain ERROR. Modify your command so it reports only a number, not the lines themselves.',
     cwd: '/',
     allowedCommands: ['grep', 'cat', 'ls'],
     conceptTags: ['-c'],
@@ -279,7 +279,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l6-only-matching',
     title: 'Only matching part (-o)',
-    prompt: 'Extract just the word ERROR from app.log.',
+    prompt: 'Normally, grep prints entire matching lines. Change your search so it outputs only the matched word ERROR.',
     cwd: '/',
     allowedCommands: ['grep'],
     conceptTags: ['-o'],
@@ -294,7 +294,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l7-context',
     title: 'Context lines',
-    prompt: 'Show 1 line of context after each ERROR.',
+    prompt: 'When an error occurs, the following line often contains useful information. Show each ERROR line along with the line immediately after it.',
     cwd: '/',
     allowedCommands: ['grep'],
     conceptTags: ['-A'],
@@ -307,7 +307,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l7-fixed',
     title: 'Fixed string mode',
-    prompt: 'Use -F to search literal pattern [0-9].',
+    prompt: 'Search for the text [0-9] exactly as written in classes.txt. Prevent grep from treating it as a regular expression.',
     cwd: '/texts',
     allowedCommands: ['grep'],
     conceptTags: ['-F'],
@@ -320,7 +320,7 @@ export const lessons: Lesson[] = [
   {
     id: 'l7-pcre-lookahead',
     title: 'Lookahead (PCRE)',
-    prompt: 'Match lines with cat followed by dog later in the line.',
+    prompt: 'In groups.txt, find lines where cat appears before dog on the same line. Match the line without consuming the dog part of the text.',
     cwd: '/regex',
     allowedCommands: ['grep'],
     conceptTags: ['-P', 'lookahead'],
